@@ -1,0 +1,56 @@
+CREATE DATABASE escola_db; 
+USE escola_db;
+
+CREATE TABLE aluno (
+    id_aluno INT PRIMARY KEY AUTO_INCREMENT,
+    nome_aluno VARCHAR(100) NOT NULL,
+    email_aluno VARCHAR(100),
+    endereco_aluno VARCHAR(150)
+);
+
+CREATE TABLE professor (
+    id_professor INT PRIMARY KEY AUTO_INCREMENT,
+    nome_professor VARCHAR(100) NOT NULL,
+    salario_professor DECIMAL(7,2),
+    telefone_professor VARCHAR(20),
+    email_professor VARCHAR(100),
+    endereco_professor VARCHAR(150)
+);
+
+-- 1º Criamos o Curso (Ele não depende de ninguém)
+CREATE TABLE curso (
+    id_curso INT PRIMARY KEY AUTO_INCREMENT,
+    nome_curso VARCHAR(80) NOT NULL,
+    horario_curso DATETIME NOT NULL,
+    certificado_curso INT NOT NULL
+);
+
+-- 2º Criamos a Turma (Ela aponta para o Curso e para o Professor)
+CREATE TABLE turma (
+    id_turma INT PRIMARY KEY AUTO_INCREMENT,
+    numeracao_turma VARCHAR (10) NOT NULL,
+    id_professor INT,
+    id_curso INT, -- O Curso entra aqui!
+    CONSTRAINT fk_turma_professor FOREIGN KEY (id_professor) REFERENCES professor(id_professor),
+    CONSTRAINT fk_turma_curso FOREIGN KEY (id_curso) REFERENCES curso(id_curso)
+);
+
+-- 3º Criamos a Disciplina (Aponta para o Curso correspondente)
+CREATE TABLE disciplina (
+    id_disciplina INT PRIMARY KEY AUTO_INCREMENT,
+    materia_disciplina VARCHAR(100), -- Mudado para VARCHAR para aceitar texto (ex: 'Matemática')
+    id_professor INT,
+    id_curso INT,
+    CONSTRAINT fk_disciplina_professor FOREIGN KEY (id_professor) REFERENCES professor (id_professor),
+    CONSTRAINT fk_disciplina_curso FOREIGN KEY (id_curso) REFERENCES curso (id_curso)
+);
+
+-- 4º Criamos a Matrícula (Une o Aluno à Turma específica)
+CREATE TABLE matricula (
+    id_matricula INT PRIMARY KEY AUTO_INCREMENT,
+    numeroracao_matricula INT,
+    id_aluno INT,
+    id_turma INT, -- A Turma entra aqui no lugar do curso!
+    CONSTRAINT fk_matricula_aluno FOREIGN KEY (id_aluno) REFERENCES aluno (id_aluno),
+    CONSTRAINT fk_matricula_turma FOREIGN KEY (id_turma) REFERENCES turma (id_turma)
+);
